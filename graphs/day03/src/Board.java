@@ -8,16 +8,32 @@ public class Board {
 
     private int n;
     public int[][] tiles;
+    int size;
+    int goal[][];
 
-    //TODO
-    // Create a 2D array representing the solved board state
-    private int[][] goal = {{}};
+    /*
+     * Create the goal state ;)
+     */
+    public int[][] makeGoal(int size) {
+        int[][] goal = new int[size][size];
+        int counter = 1;
+        for (int i = 0; i < size(); i++) {
+            for (int j = 0; j < size(); j++) {
+                goal[i][j] = counter;
+                counter++;
+            }
+        }
+        goal[size-1][size-1] = 0;
+        return goal;
+    }
 
     /*
      * Set the global board size and tile state
      */
     public Board(int[][] b) {
         tiles = b;
+        size = b.length;
+        goal = makeGoal(size);
     }
 
     /*
@@ -25,18 +41,27 @@ public class Board {
      (equal to 3 for 8 puzzle, 4 for 15 puzzle, 5 for 24 puzzle, etc)
      */
     private int size() {
-        return tiles.length;
+        return size;
     }
 
     /*
      * Sum of the manhattan distances between the tiles and the goal
      */
     public int manhattan() {
+        int gc = size - 1;
+        int gr = 0;
         int sum = 0;
         for (int i = 0; i < size(); i++) {
             for (int j = 0; j < size(); j++) {
                 if (tiles[i][j] != 0) {
-                    sum += Math.abs(i - (tiles[i][j] - 1)/size()) + Math.abs(j - tiles[i][j] - 1 % size());
+                    if (tiles[i][j] % size != 0) {
+                        gr = (tiles[i][j] / size); //goal row
+                        gc = (tiles[i][j] % size) -1;  // goal column
+                    }
+                    else {
+                        gr = (tiles[i][j]/size) - 1;
+                    }
+                    sum += Math.abs(i - gr) + Math.abs(j - gc);
                 }
             }
         }
@@ -47,8 +72,14 @@ public class Board {
      * Compare the current state to the goal state
      */
     public boolean isGoal() {
-        // TODO: Your code here
-        return false;
+        for (int i = 0; i < size(); i++) {
+            for (int j = 0; j < size(); j++) {
+                if (tiles[i][j] != goal[i][j]) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /*
@@ -65,6 +96,7 @@ public class Board {
      */
     public Iterable<Board> neighbors() {
         // TODO: Your code here
+
         return null;
     }
 
