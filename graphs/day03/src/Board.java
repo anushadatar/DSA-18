@@ -31,6 +31,7 @@ public class Board {
      * Set the global board size and tile state
      */
     public Board(int[][] b) {
+        this.n = b.length;
         tiles = b;
         size = b.length;
         goal = makeGoal(size);
@@ -48,26 +49,18 @@ public class Board {
      * Sum of the manhattan distances between the tiles and the goal
      */
     public int manhattan() {
-        int gc = size - 1;
-        int gr = 0;
         int sum = 0;
         for (int i = 0; i < size(); i++) {
             for (int j = 0; j < size(); j++) {
-                if (tiles[i][j] != 0) {
-                    if (tiles[i][j] % size != 0) {
-                        gr = (tiles[i][j] / size); //goal row
-                        gc = (tiles[i][j] % size) -1;  // goal column
-                    }
-                    else {
-                        gr = (tiles[i][j]/size) - 1;
-                    }
+                if (tiles[i][j] != 0 && tiles[i][j] != goal[i][j]) {
+                    int gr = (tiles[i][j] - 1) / size;
+                    int gc = (tiles[i][j] - 1) % size;
                     sum += Math.abs(i - gr) + Math.abs(j - gc);
                 }
             }
         }
         return sum;
     }
-
     /*
      * Compare the current state to the goal state
      */
@@ -87,7 +80,8 @@ public class Board {
      * Research how to check this without exploring all states
      */
     public boolean solvable() {
-        // TODO: Your code here
+        // Basically have to check even/odd status of number of inversions.
+
         return false;
     }
 
