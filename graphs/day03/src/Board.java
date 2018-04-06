@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -85,12 +87,46 @@ public class Board {
         return false;
     }
 
+    public Board swap(int[][] board, int i1, int j1, int i2, int j2) {
+        int temp = board[i1][j1];
+        board[i1][j1] = board[i2][j2];
+        board[i2][j2] = temp;
+        return new Board(board);
+    }
+
+    public static void printBoard(Board board) {
+        for (int i = 0; i < board.size; i++) {
+            for (int j = 0; j < board.size; j++) {
+                System.out.print(board.tiles[i][j]);
+            }
+            System.out.println();
+        }
+    }
+
     /*
      * Return all neighboring boards in the state tree
      */
     public Iterable<Board> neighbors() {
-        // TODO: Your code here
-
+        ArrayList<Board> boards = new ArrayList<>();
+        for (int i = 0; i < size(); i++) {
+            for (int j = 0; j < size(); j++) {
+                if (tiles[i][j] == 0) {
+                    if (i+1 < size) {
+                        boards.add(swap(tiles, i, j, i+1, j));
+                    }
+                    if (j + 1 < size) {
+                        boards.add(swap(tiles, i, j, i, j+1));
+                    }
+                    if (i -1 >= 0) {
+                        boards.add(swap(tiles, i, j, i-1, j));
+                    }
+                    if (j - 1 >= 0) {
+                        boards.add(swap(tiles, i, j, i, j-1));
+                    }
+                    return boards;
+                }
+            }
+        }
         return null;
     }
 
@@ -130,5 +166,8 @@ public class Board {
         System.out.println("Is goal: " + board.isGoal());
         System.out.println("Neighbors:");
         Iterable<Board> it = board.neighbors();
+        for (Board neighbor:board.neighbors()){
+            printBoard(neighbor);
+        }
     }
 }
