@@ -76,6 +76,7 @@ public class Board {
         }
         return true;
     }
+    
 
     /*
      * Returns true if the board is solvable
@@ -87,15 +88,13 @@ public class Board {
         return false;
     }
 
-    public static Board swap(int[][] board, int i1, int j1, int i2, int j2) {
+    public int[][] swap(int[][] board, int i1, int j1, int i2, int j2) {
         int temp = board[i1][j1];
-        board[i1][j1] = board[i2][j2];
-        board[i2][j2] = temp;
-        Board b = new Board(board);
-        System.out.println("swap call:");
-        printBoard(b);
-        return b;
+            board[i1][j1] = board[i2][j2];
+            board[i2][j2] = temp;
+            return board;
     }
+
 
     public static void printBoard(Board board) {
         for (int i = 0; i < board.size; i++) {
@@ -107,42 +106,48 @@ public class Board {
         System.out.println();
     }
 
+
+    private static int[][] copyOf(int[][] A) {
+        int[][] B = new int[A.length][A.length];
+        for (int i = 0; i < A.length; i++) {
+            System.arraycopy(A[i], 0, B[i], 0, A.length);
+        }
+        return B;
+    }
+
     /*
      * Return all neighboring boards in the state tree
      */
     public Iterable<Board> neighbors() {
         ArrayList<Board> boards = new ArrayList<>();
-        int[][] copyOfTiles = tiles;
-        int i = -1, j = -1;
-        for (int x = 0; x < size(); x++) {
-            for (int y = 0; y < size(); y++) {
-                if (tiles[x][y] == 0) {
-                    i = x;
-                    j = y;
-                    System.out.print("Found 0! It's at " + i + " , " + j);
-                    break;
-                }
-                if (i >= 0) {
-                    break;
+        int[][] copyOfTiles;
+        for (int i = 0; i < size(); i++) {
+            for (int j = 0; j < size(); j++) {
+                if (tiles[i][j] == 0) {
+                    if (i + 1 < size) {
+                        copyOfTiles = copyOf(tiles);
+                        copyOfTiles = swap(copyOfTiles, i, j, i + 1, j);
+                        boards.add(new Board(copyOfTiles));
+                    }
+                    if (j + 1 < size) {
+                        copyOfTiles = copyOf(tiles);
+                        copyOfTiles = swap(copyOfTiles, i, j, i, j + 1);
+                        boards.add(new Board(copyOfTiles));
+                    }
+                    if (i - 1 >= 0) {
+                        copyOfTiles = copyOf(tiles);
+                        copyOfTiles = swap(copyOfTiles, i, j, i - 1, j);
+                        boards.add(new Board(copyOfTiles));
+                    }
+                    if (j - 1 >= 0) {
+                        copyOfTiles = copyOf(tiles);
+                        copyOfTiles = swap(copyOfTiles, i, j, i, j - 1);
+                        boards.add(new Board(copyOfTiles));
+                    }
                 }
             }
         }
-        if (i >= 0) {
-            if (i + 1 < size) {
-                boards.add(swap(copyOfTiles, i, j, i + 1, j));
-            }
-            if (j + 1 < size) {
-                boards.add(swap(copyOfTiles, i, j, i, j + 1));
-            }
-            if (i - 1 >= 0) {
-                boards.add(swap(copyOfTiles, i, j, i - 1, j));
-            }
-            if (j - 1 >= 0) {
-                boards.add(swap(copyOfTiles, i, j, i, j - 1));
-            }
-            return boards;
-        }
-    return null;
+        return boards;
     }
     /*
      * Check if this board equals a given board state
@@ -179,8 +184,8 @@ public class Board {
         System.out.println("Manhattan: " + board.manhattan());
         System.out.println("Is goal: " + board.isGoal());
         System.out.println("Neighbors:");
-       // Iterable<Board> it = board.neighbors();
-        for (Board neighbor:board.neighbors()){
+       Iterable<Board> it = board.neighbors();
+        for (Board neighbor:it){
             printBoard(neighbor);
         }
     }
