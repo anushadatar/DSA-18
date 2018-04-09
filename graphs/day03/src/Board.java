@@ -81,11 +81,28 @@ public class Board {
     /*
      * Returns true if the board is solvable
      * Research how to check this without exploring all states
+     * This is like, O(n^2)
      */
     public boolean solvable() {
         // Basically have to check even/odd status of number of inversions.
+        int [] inversions = new int[tiles.length * tiles.length];
+        int total = 0;
+        for (int i = 0; i < n ; i++) {
+            for (int j = 0; j < n; j++) {
+               inversions[(i*tiles.length) + j] = tiles[i][j];
+            }
+        }
+        for (int i = 0; i <inversions.length - 1; i++) {
+            for (int j = i + 1; j < inversions.length; j++) {
+                if (inversions[i] != 0 && inversions[j] != 0) {
+                    if (inversions[j] > inversions[i]) {
+                        total++;
+                    }
+                }
+            }
+        }
+        return (total % 2 == 0);
 
-        return false;
     }
 
     public int[][] swap(int[][] board, int i1, int j1, int i2, int j2) {
@@ -176,7 +193,7 @@ public class Board {
 
     public static void main(String[] args) {
         // DEBUG - Your solution can include whatever output you find useful
-        int[][] initState = {{1, 2, 3}, {4, 0, 6}, {7, 8, 5}};
+        int[][] initState = {{1, 0, 3}, {2, 4, 5}, {6, 7, 8}};
         Board board = new Board(initState);
 
         System.out.println("Size: " + board.size());
@@ -184,9 +201,6 @@ public class Board {
         System.out.println("Manhattan: " + board.manhattan());
         System.out.println("Is goal: " + board.isGoal());
         System.out.println("Neighbors:");
-       Iterable<Board> it = board.neighbors();
-        for (Board neighbor:it){
-            printBoard(neighbor);
-        }
+        Iterable<Board> it = board.neighbors();
     }
 }
