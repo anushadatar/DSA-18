@@ -27,7 +27,7 @@ public class Solver {
             this.moves = moves;
             this.prev = prev;
             this.cost = board.manhattan() + this.moves;
-            }
+        }
 
         @Override
         public boolean equals(Object s) {
@@ -36,6 +36,7 @@ public class Solver {
             if (!(s instanceof State)) return false;
             return ((State) s).board.equals(this.board);
         }
+
         public int compareTo(State s) {
             return this.cost - s.cost;
         }
@@ -47,7 +48,7 @@ public class Solver {
     private State root(State state) {
         while (state.prev != null) {
             return root(state.prev);
-        };
+        }
         return state;
     }
 
@@ -74,13 +75,27 @@ public class Solver {
                 break;
             }
             for (Board current : solutionState.board.neighbors()) {
+                boolean ignored = false;
                 State current_state = new State(current, solutionState.moves + 1, solutionState);
-                if (!open.contains(current_state)&&!closed.contains(current_state)) {
+                for (State n:open) {
+                    if (n.equals(current_state) && n.cost<current_state.cost) {
+                        ignored = true;
+                        break;
+                    }
+                }
+                for (State n:closed) {
+                    if (n.equals(current_state) && n.cost<current_state.cost) {
+                        ignored = true;
+                        break;
+                    }
+                }
+                if (ignored == false) {
                     open.add(current_state);
+
                 }
             }
             this.minMoves = solutionState.moves;
-        }
+        } 
     }
 
 
