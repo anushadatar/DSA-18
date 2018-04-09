@@ -26,9 +26,8 @@ public class Solver {
             this.board = board;
             this.moves = moves;
             this.prev = prev;
-            // TODO
-            cost = 0;
-        }
+            this.cost = board.manhattan() + this.moves;
+            }
 
         @Override
         public boolean equals(Object s) {
@@ -37,14 +36,19 @@ public class Solver {
             if (!(s instanceof State)) return false;
             return ((State) s).board.equals(this.board);
         }
+        public int compareTo(State s) {
+            return this.cost - s.cost;
+        }
     }
 
     /*
      * Return the root state of a given state
      */
     private State root(State state) {
-        // TODO: Your code here
-        return null;
+        while (state.prev != null) {
+            return root(state.prev);
+        };
+        return state;
     }
 
     /*
@@ -53,24 +57,53 @@ public class Solver {
      * and a identify the shortest path to the the goal state
      */
     public Solver(Board initial) {
-        // TODO: Your code here
+        this.solutionState = new State(initial, 0, null);
+        PriorityQueue<State> open = new PriorityQueue<>();
+        HashSet<State> closed = new HashSet<>();
+        open.add(solutionState);
+        if (!this.isSolvable()) {
+            this.minMoves = solutionState.moves;
+            this.solved = false;
+            return;
+        }
+        while (!open.isEmpty()) {
+            closed.add(solutionState);
+            solutionState = open.poll();
+            if (solutionState.board.isGoal()) {
+                solved = true;
+                break;
+            }
+            for (Board current : solutionState.board.neighbors()) {
+                State current_state = new State(current, solutionState.moves + 1, solutionState);
+                if (!open.contains(current_state)&&!closed.contains(current_state)) {
+                    open.add(current_state);
+                }
+            }
+            this.minMoves = solutionState.moves;
+        }
     }
+
 
     /*
      * Is the input board a solvable state
      * Research how to check this without exploring all states
      */
     public boolean isSolvable() {
-        // TODO: Your code here
-        return false;
+        // TODO
+        return this.solutionState.board.solvable();
     }
 
     /*
      * Return the sequence of boards in a shortest solution, null if unsolvable
      */
     public Iterable<Board> solution() {
-        // TODO: Your code here
-        return null;
+        State solution = this.solutionState;
+        List <Board> solution_list = new LinkedList<>();
+        while (solution != null) {
+            solution_list.add(solution.board);
+            solution = solution.prev;
+        }
+        return solution_list;
     }
 
     public State find(Iterable<State> iter, Board b) {
