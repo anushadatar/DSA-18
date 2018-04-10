@@ -50,6 +50,8 @@ public class Board {
     /*
      * Sum of the manhattan distances between the tiles and the goal
      */
+    // O(n^2) for time.
+    // O(1) for space.
     public int manhattan() {
         int sum = 0;
         for (int i = 0; i < size(); i++) {
@@ -66,6 +68,9 @@ public class Board {
     /*
      * Compare the current state to the goal state
      */
+    // O(n^2) for time.
+    // O(1) for space.
+
     public boolean isGoal() {
         for (int i = 0; i < size(); i++) {
             for (int j = 0; j < size(); j++) {
@@ -135,6 +140,7 @@ public class Board {
     /*
      * Return all neighboring boards in the state tree
      */
+    // O(n!) I think
     public Iterable<Board> neighbors() {
         ArrayList<Board> boards = new ArrayList<>();
         int[][] copyOfTiles;

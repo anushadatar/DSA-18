@@ -15,7 +15,7 @@ public class Solver {
      * State class to make the cost calculations simple
      * This class holds a board state and all of its attributes
      */
-    private class State {
+    private class State implements Comparable<State> {
         // Each state needs to keep track of its cost and the previous state
         private Board board;
         private int moves; // equal to g-cost in A*
@@ -37,6 +37,7 @@ public class Solver {
             return ((State) s).board.equals(this.board);
         }
 
+        @Override
         public int compareTo(State s) {
             return this.cost - s.cost;
         }
@@ -58,20 +59,23 @@ public class Solver {
      * and a identify the shortest path to the the goal state
      */
     public Solver(Board initial) {
-        this.solutionState = new State(initial, 0, null);
+        solutionState = new State(initial, 0, null);
         PriorityQueue<State> open = new PriorityQueue<>();
         HashSet<State> closed = new HashSet<>();
         open.add(solutionState);
+
         if (!this.isSolvable()) {
             this.minMoves = solutionState.moves;
             this.solved = false;
             return;
         }
+
         while (!open.isEmpty()) {
-            closed.add(solutionState);
             solutionState = open.poll();
             if (solutionState.board.isGoal()) {
+                Board.printBoard(solutionState.board);
                 solved = true;
+                this.minMoves = solutionState.moves;
                 break;
             }
             for (Board current : solutionState.board.neighbors()) {
@@ -91,11 +95,10 @@ public class Solver {
                 }
                 if (ignored == false) {
                     open.add(current_state);
-
                 }
+                closed.add(current_state);
             }
-            this.minMoves = solutionState.moves;
-        } 
+        }
     }
 
 
