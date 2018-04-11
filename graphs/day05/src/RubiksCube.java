@@ -46,8 +46,9 @@ public class RubiksCube {
     }
 
     public boolean isSolved() {
-        // TODO
-
+        if (this.equals(new RubiksCube())) {
+            return true;
+        }
         return false;
     }
 
@@ -61,11 +62,45 @@ public class RubiksCube {
         return rub;
     }
 
+    public int[] swap(int[] cube, int val1, int val2) {
+        int temp = cube[val1];
+        cube[val1] = cube[val2];
+        cube[val2] = temp;
+        return cube;
+    }
 
     // Given a character in ['u', 'U', 'r', 'R', 'f', 'F'], return a new rubik's cube with the rotation applied
     // Do not modify this rubik's cube.
     public RubiksCube rotate(char c) {
-        // TODO
+        RubiksCube copy = new RubiksCube(this);
+        switch (c) {
+            case 'u':
+                // upper face clockwise
+
+                break;
+            case 'U':
+                // upper face counterclockwise
+                copy.cube = swap(copy.cube, 0, 22);
+                copy.cube = swap(copy.cube, 1, 20);
+                copy.cube = swap(copy.cube, , 22);
+                copy.cube = swap(copy.cube, 0, 22);
+
+
+                break;
+            case 'r':
+                // right face clockwise
+                break;
+            case 'R':
+                // right face counterclockwise
+                break;
+            case 'f':
+                // front face clockwise
+
+                break;
+            case 'F':
+                // front face counterclockwise
+                break;
+        }
         return this;
     }
 
