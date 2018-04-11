@@ -4,15 +4,17 @@ import java.util.concurrent.ThreadLocalRandom;
 // use this class if you are designing your own Rubik's cube implementation
 public class RubiksCube {
 
+    int [] cube;
     // initialize a solved rubiks cube
     public RubiksCube() {
-        // TODO
+        int [] cube  = {0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5};
     }
 
 
     // creates a copy of the rubics cube
     public RubiksCube(RubiksCube r) {
-        // TODO
+        RubiksCube cubeCopy = new RubiksCube();
+        System.arraycopy(r.cube, 0,cubeCopy.cube, 0, r.cube.length);
     }
 
     // return true if this rubik's cube is equal to the other rubik's cube
@@ -21,8 +23,12 @@ public class RubiksCube {
         if (!(obj instanceof RubiksCube))
             return false;
         RubiksCube other = (RubiksCube) obj;
-        // TODO
-        return false;
+        for (int i = 0; i < this.cube.length; i++) {
+            if (this.cube[i] != other.cube[i]) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -36,12 +42,12 @@ public class RubiksCube {
      */
     @Override
     public int hashCode() {
-        // TODO
-        return 0;
+        return cube.hashCode();
     }
 
     public boolean isSolved() {
         // TODO
+
         return false;
     }
 
