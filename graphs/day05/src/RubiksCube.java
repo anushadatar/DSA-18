@@ -1,3 +1,5 @@
+import javafx.scene.layout.Priority;
+
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -5,19 +7,34 @@ import java.util.concurrent.ThreadLocalRandom;
 
 
 
-public class RubiksCube {
+public class RubiksCube implements Comparable<RubiksCube> {
     int [] cube = {0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5};
+    int number_of_moves;
+    char prevMove;
+    RubiksCube prevCube;
     // initialize a solved rubiks cube
     public RubiksCube() {
-    }
+        number_of_moves = 0;
+        prevMove = '\u0000';
+        prevCube = null;
 
+    }
 
     // creates a copy of the rubics cube
     public RubiksCube(RubiksCube r) {
         cube = r.cube;
+        number_of_moves = r.number_of_moves;
+
+        prevMove = r.prevMove;
+        prevCube = r.prevCube;
+
     }
+
     public RubiksCube(int [] r) {
+        number_of_moves = 0;
         cube = r;
+        prevMove = '\u0000';
+        prevCube = null;
     }
 
 
@@ -66,12 +83,6 @@ public class RubiksCube {
         return rub;
     }
 
-    public int[] swap(int[] cube, int val1, int val2) {
-        int temp = cube[val1];
-        cube[val1] = cube[val2];
-        cube[val2] = temp;
-        return cube;
-    }
 
     private static void printArray(int[] anArray) {
         for (int i = 0; i < anArray.length; i++) {
@@ -89,8 +100,8 @@ public class RubiksCube {
         //RubiksCube copy = new RubiksCube(this);
         //System.out.print(copy.cube);
         int[] newCube = new int[cube.length];
+        System.arraycopy(this.cube, 0, newCube, 0, cube.length);
         int[] copyOfCube = new int[cube.length];
-
         System.arraycopy(this.cube, 0, copyOfCube, 0, cube.length);
 
         switch (c) {
@@ -229,33 +240,66 @@ public class RubiksCube {
         List<RubiksCube> n = new ArrayList<RubiksCube>();
         char[] potential_moves = {'u', 'U', 'r', 'R', 'f', 'F'};
         for (char a : potential_moves) {
-            n.add(this.rotate(a));
+                RubiksCube r = (this.rotate(a));
+                r.number_of_moves = this.number_of_moves + 1;
+                r.prevMove = a;
+                r.prevCube = this;
+                n.add(r);
+
         }
         return n;
-
-
     }
 
 
     // return the list of rotations needed to solve a rubik's cube
     public List<Character> solve() {
+        ArrayList<Character> solution = new ArrayList<>();
+        PriorityQueue<RubiksCube> q = new PriorityQueue<>();
+        HashSet<RubiksCube> visited = new HashSet<>();
+        visited.add(this);
+        q.add(this);
+        while (!q.isEmpty()) {
+            System.out.println("Entering while loop.");
+            RubiksCube current = q.poll();
+            System.out.println(current.number_of_moves);
+            if (current.isSolved()) {
+                System.out.println("Solved?.");
 
-        return new ArrayList<>();
+                while (current.prevCube != null) {
+                    solution.add(current.prevMove);
+                    System.out.println("About to print prev mode:");
+                    System.out.println(current.prevMove);
+                    current = current.prevCube;
+                }
+                Collections.reverse(solution);
+                return solution;
+            } else {
+                System.out.println("Neighbors.");
+
+                for (RubiksCube n : current.neighbors()) {
+                    if (!visited.contains(n) && !q.contains(n)) {
+                        q.add(n);
+                        visited.add(n);
+                    }
+                }
+            }
+        }
+        System.out.print(solution.size());
+        for (char i : solution) {
+            System.out.print(i);
+        }
+        return solution;
     }
+
 
 public static void main(String[] args) {
     RubiksCube cube1 = new RubiksCube();
-  //  cube1.rotate('f').rotate('f').rotate('f');
     RubiksCube cube2 = new RubiksCube();
-//    cube2.rotate('F');
-   // cube1.rotate('f');
-    System.out.println(cube1.rotate('f').rotate('f').rotate('f').equals(cube2.rotate('F')));
-    System.out.println(cube1.rotate('u').rotate('u').rotate('u').equals(cube2.rotate('U')));
-    System.out.println(cube1.rotate('r').rotate('r').rotate('r').equals(cube2.rotate('R')));
 
+    }
 
-    printArray(cube1.cube);
-    printArray(cube2.cube);
-}
-
+    @Override
+    public int compareTo(RubiksCube o) {
+        return (this.number_of_moves  - o.number_of_moves);
+    }
 }
