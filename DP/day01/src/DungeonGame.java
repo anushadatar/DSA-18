@@ -3,14 +3,9 @@
 // RR : Min of going down or going right, or 1 if no solution
 // Memo : Next optimal move subproblem solution
 // SOlution = initial value
-// Everything is O(n squared)
-
-
-
+// Everything is O(height x width)
 public class DungeonGame {
-
     public static int minInitialHealth(int[][] map) {
-        // TODO: Your code here
         int[][] memo = new int[map.length][map[0].length];
         if (map[map.length-1][map[0].length-1] <= 0) {
             memo[map.length - 1][map[0].length - 1] = 1 + Math.abs(map[map.length - 1][map[0].length - 1]);

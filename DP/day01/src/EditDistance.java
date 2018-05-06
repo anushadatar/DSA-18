@@ -6,6 +6,7 @@ public class EditDistance {
         // RR : The minimum value with each operation
         // Memoize : The memo is the solution to the subproblem for each i and j combination
         // Solve : memo[length][length]
+        // Runtime = O(a*b)
         int m, n;
         int [][] memo = new int[a.length() + 1][b.length() + 1];
         for (int i = 0; i < memo.length; i++ ) {
@@ -14,6 +15,7 @@ public class EditDistance {
                 if (i == 0) { memo[i][j] = j;}
                 else if (j == 0) { memo[i][j] = i; }
                 else {
+                    // Recurrence Relation.
                     int x = memo[i-1][j]  + 1;
                     int y = memo[i][j-1] + 1;
                     int z;
